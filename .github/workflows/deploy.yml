@@ -27,7 +27,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USER }}/fantasy-drafter:latest
+          tags: ${{ secrets.DOCKERHUB_USER }}/drafter:latest
 
       - name: Prepare SSH
         uses: webfactory/ssh-agent@v0.9.1
