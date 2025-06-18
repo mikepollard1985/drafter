@@ -40,19 +40,21 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
 
-      - name: Deploy to server
+      - name: SSH & Deploy via Docker Compose
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ vars.SERVER_HOST }} << 'EOF'
-            cd ${{ vars.DEPLOY_PATH }}
-            # pull latest image
-            docker pull ${{ secrets.DOCKER_USER }}/drafter:latest
-            # stop old container (if exists)
-            docker rm -f drafter || true
-            # run new container
-            docker run -d \
-              --name drafter \
-              -p 8000:8000 \
-              --env-file .env \
-              ${{ secrets.DOCKER_USER }}/drafter:latest
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+            set -e
+            cd ${{ secrets.DEPLOY_PATH }}
+
+            # Authenticate on server-side for pulling the private image
+            echo "${{ secrets.DOCKER_PAT }}" \
+              | docker login --username ${{ secrets.DOCKER_USER }} --password-stdin
+
+            # Pull & restart only the api service defined in compose.yml
+            docker-compose pull api
+            docker-compose up -d --build api
+
+            # Optional cleanup of old images
+            docker image prune -f
           EOF
 

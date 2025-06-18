@@ -3,6 +3,7 @@ version: '3.8'
 services:
   api:
     build: .
+    image: michaelpollard85/drafter:latest
     container_name: drafter
     restart: unless-stopped
     env_file:
