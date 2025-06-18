@@ -51,9 +51,10 @@ jobs:
               | docker login --username ${{ secrets.DOCKER_USER }} --password-stdin
 
             # Pull & restart only the api service defined in compose.yml
-            docker-compose pull api
             docker-compose down --volumes
-            docker-compose up -d --build --force-recreate api
+            docker-compose down
+            docker-compose pull api
+            docker-compose up -d --build api
 
             # Optional cleanup of old images
             docker image prune -f
