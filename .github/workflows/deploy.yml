@@ -54,7 +54,7 @@ jobs:
             docker-compose down --volumes
             docker-compose down
             docker-compose pull api
-            docker-compose up -d --build --force-recreate api
+            docker-compose up -d --build api
 
             # Optional cleanup of old images
             docker image prune -f
