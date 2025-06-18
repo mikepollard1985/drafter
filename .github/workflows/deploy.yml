@@ -50,9 +50,12 @@ jobs:
             echo "${{ secrets.DOCKER_PAT }}" \
               | docker login --username ${{ secrets.DOCKER_USER }} --password-stdin
 
+            # Remove any existing drafter container to avoid name conflicts
+            docker rm -f drafter || true
+
             # Pull & restart only the api service defined in compose.yml
             docker-compose down --volumes
-            docker-compose down
+
             docker-compose pull api
             docker-compose up -d --build api
 
