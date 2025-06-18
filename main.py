@@ -10,7 +10,10 @@ from authlib.integrations.starlette_client import OAuth
 load_dotenv()
 
 app = FastAPI()
-app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET", "supersecret"))
+session_secret = os.getenv("SESSION_SECRET")
+if not session_secret:
+    raise RuntimeError("SESSION_SECRET environment variable is required but not set.")
+app.add_middleware(SessionMiddleware, secret_key=session_secret)
 
 # OAuth2 credentials
 CLIENT_ID     = os.getenv("YAHOO_CLIENT_ID")
